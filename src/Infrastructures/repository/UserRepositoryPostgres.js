@@ -25,6 +25,7 @@ class UserRepositoryPostgres extends UserRepository {
   async addUser(registerUser) {
     const { username, password, fullname } = registerUser;
     const id = `user-${this._idGenerator()}`;
+
     const createdAt = new Date().toISOString();
 
     const query = {
@@ -50,6 +51,21 @@ class UserRepositoryPostgres extends UserRepository {
     }
 
     return result.rows[0].password;
+  }
+
+  async getIdByUsername(username) {
+    const query = {
+      text: "SELECT id FROM users WHERE username = $1",
+      values: [username],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rowCount) {
+      throw new InvariantError("username tidak ditemukan");
+    }
+
+    return result.rows[0].id;
   }
 }
 
