@@ -18,9 +18,9 @@ describe("Users endpoints", () => {
     it("should response 201 and persisted user", async () => {
       // Arrange
       const requestPayload = {
-        username: "dicoding",
+        username: "uname",
         password: "secret",
-        fullname: "Dicoding Indonesia",
+        fullname: "Full Name",
       };
       const server = await createServer(container);
 
@@ -31,7 +31,14 @@ describe("Users endpoints", () => {
         payload: requestPayload,
       });
 
+      const query = {
+        text: "SELECT * FROM users",
+      };
+      const res = await pool.query(query);
+      console.log(res.rows);
+
       // Assert
+      console.log(response.payload);
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(201);
       expect(responseJson.status).toEqual("success");
@@ -41,7 +48,7 @@ describe("Users endpoints", () => {
     it("should response 400 when request payload not contain needed property", async () => {
       // Arrange
       const requestPayload = {
-        fullname: "Dicoding Indonesia",
+        fullname: "Full Name",
         password: "secret",
       };
       const server = await createServer(container);
@@ -65,9 +72,9 @@ describe("Users endpoints", () => {
     it("should response 400 when request payload not meet data type specification", async () => {
       // Arrange
       const requestPayload = {
-        username: "dicoding",
+        username: "uname",
         password: "secret",
-        fullname: ["Dicoding Indonesia"],
+        fullname: ["Full Name"],
       };
       const server = await createServer(container);
 
@@ -90,9 +97,9 @@ describe("Users endpoints", () => {
     it("should response 400 when username more than 50 character", async () => {
       // Arrange
       const requestPayload = {
-        username: "dicodingindonesiadicodingindonesiadicodingindonesiadicoding",
+        username: "unameindonesiaunameindonesiaunameindonesiaunameindonesiaunameindonesiauname",
         password: "secret",
-        fullname: "Dicoding Indonesia",
+        fullname: "Full Name",
       };
       const server = await createServer(container);
 
@@ -115,9 +122,9 @@ describe("Users endpoints", () => {
     it("should response 400 when username contain restricted character", async () => {
       // Arrange
       const requestPayload = {
-        username: "dicoding indonesia",
+        username: "uname indonesia",
         password: "secret",
-        fullname: "Dicoding Indonesia",
+        fullname: "Full Name",
       };
       const server = await createServer(container);
 
@@ -139,10 +146,10 @@ describe("Users endpoints", () => {
 
     it("should response 400 when username unavailable", async () => {
       // Arrange
-      await UsersTableTestHelper.addUser({ username: "dicoding" });
+      await UsersTableTestHelper.addUser({ username: "uname" });
       const requestPayload = {
-        username: "dicoding",
-        fullname: "Dicoding Indonesia",
+        username: "uname",
+        fullname: "Full Name",
         password: "super_secret",
       };
       const server = await createServer(container);
