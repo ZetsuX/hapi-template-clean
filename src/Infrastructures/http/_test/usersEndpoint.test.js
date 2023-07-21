@@ -35,10 +35,8 @@ describe("Users endpoints", () => {
         text: "SELECT * FROM users",
       };
       const res = await pool.query(query);
-      console.log(res.rows);
 
       // Assert
-      console.log(response.payload);
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(201);
       expect(responseJson.status).toEqual("success");
